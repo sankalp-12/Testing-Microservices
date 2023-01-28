@@ -6,10 +6,11 @@
             <div class="col">
                 <h1 class="mt-5">Testing Microservices</h1>
                 <hr>
-                <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Broker</a>
-                <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Auth</a>
+                <a id="brokerBtn" class="btn btn-outline-dark" href="javascript:void(0);">Test Broker</a>
+                <a id="authBrokerBtn" class="btn btn-outline-dark" href="javascript:void(0);">Test Authentication</a>
+                <a id="logBtn" class="btn btn-outline-dark" href="javascript:void(0);">Test Logger</a>
 
-                <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
+                <div id="output" class="mt-5 bg-dark text-white" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output showed here...</span>
                 </div>
             </div>
@@ -17,13 +18,13 @@
         <div class="row">
             <div class="col">
                 <h4 class="mt-5">Sent</h4>
-                <div class="mt-1" style="outline: 1px solid silver; padding: 2em;">
+                <div class="mt-1 bg-dark text-white" style="outline: 1px solid silver; padding: 2em;">
                     <pre id="payload"><span class="text-muted">Nothing sent yet...</span></pre>
                 </div>
             </div>
             <div class="col">
                 <h4 class="mt-5">Received</h4>
-                <div class="mt-1" style="outline: 1px solid silver; padding: 2em;">
+                <div class="mt-1 bg-dark text-white" style="outline: 1px solid silver; padding: 2em;">
                     <pre id="received"><span class="text-muted">Nothing received yet...</span></pre>
                 </div>
             </div>
@@ -35,6 +36,7 @@
     <script>
     let brokerBtn = document.getElementById("brokerBtn");
     let authBrokerBtn = document.getElementById("authBrokerBtn");
+    let logBtn = document.getElementById("logBtn");
     let output = document.getElementById("output");
     let sent = document.getElementById("payload");
     let recevied = document.getElementById("received");
@@ -68,6 +70,41 @@
             auth: {
                 email: "admin@example.com",
                 password: "verysecret",
+            }
+        }
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
+
+        const body = {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: headers,
+        }
+
+        fetch("http:\/\/localhost:8080/handle", body)
+        .then((response) => response.json())
+        .then((data) => {
+            sent.innerHTML = JSON.stringify(payload, undefined, 4);
+            received.innerHTML = JSON.stringify(data, undefined, 4);
+            if (data.error) {
+                output.innerHTML += `<br><strong>Error:</strong> ${data.message}`;
+            } else {
+                output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+            }
+        })
+        .catch((error) => {
+            output.innerHTML += "<br><br>Error: " + error;
+        })
+    })    
+
+    logBtn.addEventListener("click", function() {
+
+        const payload = {
+            action: "log",
+            log: {
+                name: "Sankalp Acharya",
+                data: "CS525",
             }
         }
 
