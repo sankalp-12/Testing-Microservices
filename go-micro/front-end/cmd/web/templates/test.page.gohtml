@@ -6,9 +6,10 @@
             <div class="col">
                 <h1 class="mt-5">Testing Microservices</h1>
                 <hr>
-                <a id="brokerBtn" class="btn btn-outline-dark" href="javascript:void(0);">Test Broker</a>
-                <a id="authBrokerBtn" class="btn btn-outline-dark" href="javascript:void(0);">Test Authentication</a>
-                <a id="logBtn" class="btn btn-outline-dark" href="javascript:void(0);">Test Logger</a>
+                <a id="brokerBtn" class="btn btn-outline-dark" href="javascript:void(0);">Broker Service</a>
+                <a id="authBrokerBtn" class="btn btn-outline-dark" href="javascript:void(0);">Authentication Service</a>
+                <a id="logBtn" class="btn btn-outline-dark" href="javascript:void(0);">Logger Service</a>
+                <a id="mailBtn" class="btn btn-outline-dark" href="javascript:void(0);">Email Service</a>
 
                 <div id="output" class="mt-5 bg-dark text-white" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output showed here...</span>
@@ -37,9 +38,10 @@
     let brokerBtn = document.getElementById("brokerBtn");
     let authBrokerBtn = document.getElementById("authBrokerBtn");
     let logBtn = document.getElementById("logBtn");
+    let mailBtn = document.getElementById("mailBtn");
     let output = document.getElementById("output");
     let sent = document.getElementById("payload");
-    let recevied = document.getElementById("received");
+    let received = document.getElementById("received");
 
     brokerBtn.addEventListener("click", function() {
 
@@ -105,6 +107,43 @@
             log: {
                 name: "Sankalp Acharya",
                 data: "CS525",
+            }
+        }
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
+
+        const body = {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: headers,
+        }
+
+        fetch("http:\/\/localhost:8080/handle", body)
+        .then((response) => response.json())
+        .then((data) => {
+            sent.innerHTML = JSON.stringify(payload, undefined, 4);
+            received.innerHTML = JSON.stringify(data, undefined, 4);
+            if (data.error) {
+                output.innerHTML += `<br><strong>Error:</strong> ${data.message}`;
+            } else {
+                output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+            }
+        })
+        .catch((error) => {
+            output.innerHTML += "<br><br>Error: " + error;
+        })
+    })    
+
+    mailBtn.addEventListener("click", function() {
+
+        const payload = {
+            action: "mail",
+            mail: {
+                from: "sender@testing.com",
+                to: "receiver@testing.com",
+                subject: "Test email service!",
+                message: "Welcome to CS525!",
             }
         }
 
