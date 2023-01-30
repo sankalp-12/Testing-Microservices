@@ -53,6 +53,14 @@ services:
       FROM_NAME: "Sankalp Acharya"
       FROM_ADDRESS: sankalp.acharya@testing.com
 
+  listener-service:
+    build:
+      context: ./../listener-service
+      dockerfile: ./../listener-service/listener-service.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
+
   postgres:
     image: 'postgres:14.2'
     ports:
@@ -87,4 +95,14 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+  rabbitmq:
+    image: 'rabbitmq:3.9-management-alpine'
+    ports:
+      - "5672:5672"
+      - "8040:8040"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
     
