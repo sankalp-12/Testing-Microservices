@@ -254,3 +254,32 @@ func (app *Config) pushToQueue(p RequestPayload, messages ...string) error {
 	}
 	return nil
 }
+
+// logItemviaRPC logs an event using the logger-service. It makes the call through RPC.
+// func (app *Config) logItemviaRPC(w http.ResponseWriter, l LogPayload) {
+// 	client, err := rpc.Dial("tcp", "logger-service:5001")
+// 	if err != nil {
+// 		app.errorJSON(w, err)
+// 		return
+// 	}
+
+// 	rpcPayload := RPCPayload{
+// 		Name: l.Name,
+// 		Data: l.Data,
+// 	}
+
+// 	var result string
+// 	err = client.Call("RPCServer.LogInfo", rpcPayload, &result)
+// 	if err != nil {
+// 		app.errorJSON(w, err)
+// 		return
+// 	}
+
+// 	payload := jsonResponse{
+// 		Error:   false,
+// 		Message: result,
+// 	}
+
+// 	app.writeJSON(w, http.StatusAccepted, payload)
+
+// }
