@@ -17,7 +17,9 @@ func (e *Emitter) setup() error {
 	}
 
 	defer channel.Close()
+
 	return declareExchange(channel)
+
 }
 
 func (e *Emitter) Push(event string, severity string) error {
@@ -30,7 +32,7 @@ func (e *Emitter) Push(event string, severity string) error {
 	log.Println("Pushing to channel")
 
 	err = channel.Publish(
-		"logs_topic",
+		"exchange",
 		severity,
 		false,
 		false,
